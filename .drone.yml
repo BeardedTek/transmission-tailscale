@@ -41,8 +41,7 @@ steps:
     event:
     - cron
     cron:
-      include:
-      - hourly
+    - hourly
   settings:
     username: beardedtek
     password:
@@ -53,14 +52,13 @@ steps:
     experimental: true
     compress: true
     squash: true
-- name: beardedtek-CRON-daily
+- name: beardedtek-CRON-daily-test
   image: plugins/docker
   when:
     event:
     - cron
     cron:
-      include:
-      - daily
+    - daily
   settings:
     username: beardedtek
     password:
