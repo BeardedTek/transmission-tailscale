@@ -1,19 +1,10 @@
 # transmission-tailscale
-# transmission-tailscale [![Drone Build/Push to dockerhub](https://drone.beardedtek.com/api/badges/BeardedTek/docker-transmission-tailscale/status.svg)](https://drone.beardedtek.com/BeardedTek/docker-transmission-tailscale)
-
 Extends linuxserver/tranmission with tailscale functionality to mount remote NFS via tailscale network. As of right now, it only works on amd64.
 
+![Release](https://img.shields.io/github/v/release/beardedtek/transmission-tailscale) ![ReleaseDate](https://img.shields.io/github/release-date/beardedtek/transmission-tailscale) [![Build Status](https://drone.beardedtek.com/api/badges/BeardedTek/transmission-tailscale/status.svg?ref=refs/heads/main)](https://drone.beardedtek.com/BeardedTek/transmission-tailscale) ![Image Size](https://img.shields.io/docker/image-size/beardedtek/transmission-tailscale/latest) ![Pulls](https://img.shields.io/docker/pulls/beardedtek/transmission-tailscale) ![license](https://img.shields.io/github/license/beardedtek/transmission-tailscale) [![twitter-follow](https://img.shields.io/twitter/follow/beardedtek?style=social)](https://twitter.com/intent/user?screen_name=beardedtek)
 ## FEATURES:
-- Use an Exit Node
-  - An exit node on tailscale effective lets you "place shift".  Your IP address will be that of the exit node to all outside services.
-
-- Auto Pause Transmission on NFS disconnect
-  - Transmission will pause all downloads when NFS disconnects
-    - For this to function properly, create a file named MOUNTED in the base NFS directory.
-
-- Auto Pause Transmission on Tailscale disconnect
-  - Transmission will pause all downloads when tailscale goes down
-    - Since we are mounting our NFS via tailscale, pause all downloads if tailscale goes down  This way it's not filling up the remote drive
+- Use tailscale to remotely and securely view your instance of nefarious outside your network via [Tailscale](https://tailscale.com)
+- Placeshift your presence using an [exit node](https://tailscale.com/kb/1103/exit-nodes/)
   
 ## Weekly Builds
 I have this set to build weekly as its based on linuxserver/transmission.  I want it to keep up to date with upstream.
