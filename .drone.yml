@@ -12,7 +12,7 @@ steps:
   image: plugins/docker
   when:
     event:
-      - push
+      - tag
   settings:
     username: beardedtek
     password:
