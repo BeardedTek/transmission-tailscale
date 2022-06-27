@@ -1,3 +1,10 @@
+###############################################################################
+#                                                                             #
+#             DO NOT EDIT THIS COMPOSE FILE.  CREATE A .env FILE.             #
+# https://github.com/BeardedTek/transmission-tailscale/blob/main/template.env #
+#                                                                             #
+###############################################################################
+
 version: "2.4"
 services:
   transmission-tailscale:
@@ -37,5 +44,5 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: ${SUBNET:-192.168.251.0/24}
-          gateway: ${GATEWAY:-192.168.251.254}
+        - subnet: ${DOCKER_SUBNET:-192.168.251.0/24}
+          gateway: ${DOCKER_GATEWAY:-192.168.251.254}

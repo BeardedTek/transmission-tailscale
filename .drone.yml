@@ -6,7 +6,37 @@ trigger:
   event:
     - push
     - cron
+    - tag
 steps:
+- name: beardedtek-TAG
+  image: plugins/docker
+  when:
+    event:
+      - push
+  settings:
+    username: beardedtek
+    password:
+      from_secret: docker_password
+    repo: docker.beardedtek.com/beardedtek/transmission-tailscale
+    registry: docker.beardedtek.com
+    tags: latest,${DRONE_TAG}
+    experimental: true
+    compress: true
+    squash: true
+- name: dockerhub-TAG
+  image: plugins/docker
+  when:
+    event:
+      - tag
+  settings:
+    username: beardedtek
+    password:
+      from_secret: docker_password
+    repo: beardedtek/transmission-tailscale
+    tags: latest,${DRONE_TAG}
+    experimental: true
+    compress: true
+    squash: true
 - name: beardedtek-PUSH
   image: plugins/docker
   when:
@@ -48,7 +78,7 @@ steps:
       from_secret: docker_password
     repo: docker.beardedtek.com/beardedtek/transmission-tailscale
     registry: docker.beardedtek.com
-    tags: daily
+    tags: daily,latest
     experimental: true
     compress: true
     squash: true
