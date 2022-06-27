@@ -1,0 +1,57 @@
+kind: pipeline
+name: beardedtek-transmission-tailscale
+trigger:
+  branch:
+    - master
+  event:
+    - push
+steps:
+- name: beardedtek-PUSH
+  image: plugins/docker
+  when:
+    event:
+      - push
+  settings:
+    username: beardedtek
+    password:
+      from_secret: docker_password
+    repo: docker.beardedtek.com/beardedtek/transmission-tailscale
+    registry: docker.beardedtek.com
+    tags: latest,${DRONE_REPO_BRANCH}
+    experimental: true
+    compress: true
+    squash: true
+- name: dockerhub-PUSH
+  image: plugins/docker
+  when:
+    event:
+      - push
+  settings:
+    username: beardedtek
+    password:
+      from_secret: docker_password
+    repo: beardedtek/transmission-tailscale
+    tags: latest,${DRONE_REPO_BRANCH}
+    experimental: true
+    compress: true
+    squash: true
+- name: beardedtek-PUSH-hourly
+  image: plugins/docker
+  when:
+    event:
+      - cron
+      cron:
+      - hourly
+  settings:
+    username: beardedtek
+    password:
+      from_secret: docker_password
+    repo: docker.beardedtek.com/beardedtek/transmission-tailscale
+    registry: docker.beardedtek.com
+    tags: latest,${DRONE_REPO_BRANCH}
+    experimental: true
+    compress: true
+    squash: true
+
+
+

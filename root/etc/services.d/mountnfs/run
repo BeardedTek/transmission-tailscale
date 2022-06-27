@@ -1,0 +1,57 @@
+#!/usr/bin/with-contenv bash
+if [ "${MOUNT_NFS:-true}" == "true" ];then
+    echo "MOUNTNFS: MOUNTNFS: Starting rpcbind"
+    /sbin/rpcbind &
+    echo "MOUNTNFS: mount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}"
+    mount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}
+    while [ "$LOOP" != "0" ]; do
+        if [ $(ping -c1 -W3 ${NAS_IP:-192.168.3.100} | grep "packet loss" | awk '{print $7}' | sed s/'%'//) != "0" ]; then
+
+            echo "MOUNTNFS: Cannot reach NAS"
+
+            echo "MOUNTNFS: Pausing Transmission"
+            transmission-remote --stop all
+
+            echo "MOUNTNFS: Unmount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}"
+            umount ${NAS_MOUNT_POINT:-/downloads}
+
+            if test -z "$(ip a show tailscale0 up | grep inet)" ;then
+                tailscale up
+            fi
+
+        else
+            if [ -z $(mount | grep ${NAS_IP:-192.168.3.100}) ]; then
+
+                echo "MOUNTNFS: Pausing Transmission"
+                transmission-remote --stop all
+
+                echo "MOUNTNFS: Remount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}"
+                mount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}
+
+                echo "MOUNTNFS: Resuming Transmission"
+                transmission-remote --start all
+
+            else
+                if [ ! -f "${NAS_MOUNT_POINT:-/downloads}/MOUNTED" ]; then
+
+                    echo "MOUNTNFS: Pausing Transmission"
+                    transmission-remote --stop all
+
+                    echo "MOUNTNFS: Unmount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}"
+                    umount ${NAS_MOUNT_POINT:-/downloads}
+
+                    echo "MOUNTNFS: Remount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}"
+                    mount ${NAS_IP:-192.168.3.100}:${NAS_SHARE:-/share/media} ${NAS_MOUNT_POINT:-/downloads}
+
+                    if [ -f "${NAS_MOUNT_POINT:-/downloads}/MOUNTED" ]; then
+
+                        echo "MOUNTNFS: Resuming Transmission"
+                        transmission-remote --start all
+                    fi
+                fi
+            fi
+        fi
+        sleep 5
+    done
+fi
+while :;do echo "MOUNTNFS: DISABLED - Set parameters in your .env file"; sleep 1d ;done
