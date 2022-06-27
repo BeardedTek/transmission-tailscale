@@ -15,19 +15,28 @@ if [ "${NFS_ENABLE:-true}" == "true" ];then
             echo "MOUNTNFS: Unmount ${NFS_IP:-192.168.3.100}:${NFS_SHARE:-/share/media} ${NFS_MOUNT_POINT:-/downloads}"
             umount ${NFS_MOUNT_POINT:-/downloads}
 
-            if test -z "$(ip a show tailscale0 up | grep inet)" ;then
+            if [[ $(ip a show tailscale0 up | grep inet) ]] ;then
                 tailscale up
             fi
 
         else
-            if [ -z $(mount | grep ${NFS_IP:-192.168.3.100}) ]; then
-
-                echo "MOUNTNFS: Pausing Transmission"
+            if [[ ! $(mount | grep ${NFS_IP:-192.168.3.100}) ]]; then
+                
+                echo "MOUNTNFS: NAS unreachable.  Pausing Transmission"
                 transmission-remote --stop all
+                
+                while [[ ! $(mount | grep ${NFS_IP:-192.168.3.100}) ]]; do
 
-                echo "MOUNTNFS: Remount ${NFS_IP:-192.168.3.100}:${NFS_SHARE:-/share/media} ${NFS_MOUNT_POINT:-/downloads}"
-                mount ${NFS_IP:-192.168.3.100}:${NFS_SHARE:-/share/media} ${NFS_MOUNT_POINT:-/downloads}
+                    echo "MOUNTNFS: Unmount ${NFS_MOUNT_POINT}"
+                    unmount ${NFS_MOUNT_POINT:-/downloads}
+                    
+                    echo "MOUNTNFS: Remount ${NFS_IP:-192.168.3.100}:${NFS_SHARE:-/share/media} ${NFS_MOUNT_POINT:-/downloads}"
+                    mount ${NFS_IP:-192.168.3.100}:${NFS_SHARE:-/share/media} ${NFS_MOUNT_POINT:-/downloads}
 
+                    sleep 30s
+
+                done
+                
                 echo "MOUNTNFS: Resuming Transmission"
                 transmission-remote --start all
 
