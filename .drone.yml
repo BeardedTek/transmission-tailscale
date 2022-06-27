@@ -35,7 +35,7 @@ steps:
     experimental: true
     compress: true
     squash: true
-- name: beardedtek-CRON
+- name: beardedtek-CRON-hourly
   image: plugins/docker
   when:
     event:
@@ -53,7 +53,7 @@ steps:
     experimental: true
     compress: true
     squash: true
-- name: beardedtek-CRON
+- name: beardedtek-CRON-daily
   image: plugins/docker
   when:
     event:
