@@ -70,7 +70,9 @@ steps:
   image: plugins/docker
   when:
     event:
-      cron:
+    - cron
+    cron:
+      include:
       - daily
   settings:
     username: beardedtek
