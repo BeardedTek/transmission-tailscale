@@ -40,7 +40,6 @@ steps:
   image: plugins/docker
   when:
     event:
-      - cron
       cron:
       - hourly
   settings:
@@ -57,7 +56,6 @@ steps:
   image: plugins/docker
   when:
     event:
-      - cron
       cron:
       - daily
   settings:
