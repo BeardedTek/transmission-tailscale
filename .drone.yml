@@ -35,12 +35,13 @@ steps:
     experimental: true
     compress: true
     squash: true
-- name: beardedtek-PUSH-hourly
+- name: beardedtek-CRON
   image: plugins/docker
   when:
     event:
-      - cron
-      cron:
+    - cron
+    cron:
+      include:
       - hourly
   settings:
     username: beardedtek
@@ -48,10 +49,25 @@ steps:
       from_secret: docker_password
     repo: docker.beardedtek.com/beardedtek/transmission-tailscale
     registry: docker.beardedtek.com
-    tags: latest,${DRONE_REPO_BRANCH}
+    tags: hourly
     experimental: true
     compress: true
     squash: true
-
-
-
+- name: beardedtek-CRON
+  image: plugins/docker
+  when:
+    event:
+    - cron
+    cron:
+      include:
+      - daily
+  settings:
+    username: beardedtek
+    password:
+      from_secret: docker_password
+    repo: docker.beardedtek.com/beardedtek/transmission-tailscale
+    registry: docker.beardedtek.com
+    tags: daily
+    experimental: true
+    compress: true
+    squash: true
