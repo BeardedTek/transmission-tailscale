@@ -39,9 +39,9 @@ steps:
   image: plugins/docker
   when:
     event:
-    - cron
-    cron:
-    - hourly
+      - cron
+      cron:
+      - hourly
   settings:
     username: beardedtek
     password:
@@ -56,9 +56,9 @@ steps:
   image: plugins/docker
   when:
     event:
-    - cron
-    cron:
-    - daily
+      - cron
+      cron:
+      - daily
   settings:
     username: beardedtek
     password:
