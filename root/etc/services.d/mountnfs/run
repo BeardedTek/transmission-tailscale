@@ -8,14 +8,14 @@ if [ "${NFS_ENABLE:-true}" == "true" ];then
 
         while [[ ! $(mount | grep ${NFS_IP:-192.168.3.100}) ]] || [ ! -f "${NAS_MOUNT_POINT:-/downloads}/MOUNTED" ]; do
             echo "MOUNTNFS: NFS not mounted.  Pausing Transmission."
-            transmission-remote -t all --stop all
+            transmission-remote -t all --stop
 
             echo "Unmount and Remount ${NFS_IP:-192.168.3.100}:${NFS_SHARE:-/share/media} on ${NFS_MOUNT_POINT:-/downloads}"
-            unmount ${NFS_MOUNT_POINT}
+            umount ${NFS_MOUNT_POINT}
             mount ${NFS_IP}:${NFS_SHARE:-/share/media} ${NFS_MOUNT_POINT:-/downloads}
 
             echo "Resuming transmission"
-            transmission-remote -t all --start all
+            transmission-remote -t all --start
         done
         sleep 5
     done
